@@ -97,10 +97,13 @@ def make_sets_2():
         pixels.append(np.fromstring(pixel, dtype=np.uint8, sep=" ").reshape((48,48)))
     
     for index, value in enumerate(pixels):
+
+        if data['emotion'][index] == 2 or data['emotion'][index] == 6:
+            continue
         
         clahe_img = clahe.apply(value)
         landmarks_vec = get_landmarks(clahe_img)
-
+        
         if landmarks_vec == "error":
             pass
         else:
