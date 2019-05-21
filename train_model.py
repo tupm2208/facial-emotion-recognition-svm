@@ -12,19 +12,11 @@ from sklearn.metrics import classification_report, confusion_matrix
 import pandas as pd
 
 #Emotion list
-emotions = ["anger", "disgust", "happy", "neutral", "surprise"]
-emotions2 = ["anger", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
+emotions = ["anger", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
 detector = dlib.get_frontal_face_detector()
 model = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-clf = SVC(C=0.01, kernel='linear', decision_function_shape='ovo', probability=True)   #Set the classifier as a support vector machines with linear kernel
-
-def get_files(emotion):
-    images = glob.glob("googleset\\%s\\*" %emotion)
-    random.shuffle(images)
-    training_set = images[:int(len(images)*0.8)]   #get 80% of image files to be trained
-    testing_set = images[-int(len(images)*0.2):]   #get 20% of image files to be tested
-    return training_set, testing_set
+clf = SVC(C=0.001, kernel='linear', decision_function_shape='ovo', probability=True)   #Set the classifier as a support vector machines with linear kernel
 
 def get_landmarks(image):
     detections = detector(image, 1)
@@ -100,54 +92,21 @@ def make_sets_2():
 
         if data['emotion'][index] == 2 or data['emotion'][index] == 6:
             continue
-        
+        if data['emotion'][index] == 1:
+            print(emotions[data['emotion'][index]], "-", data['emotion'][index])
         clahe_img = clahe.apply(value)
         landmarks_vec = get_landmarks(clahe_img)
+        # landmarks_vec = get_landmarks(value)
         
         if landmarks_vec == "error":
             pass
         else:
             if data['Usage'][index] == "Training":
                 training_data.append(landmarks_vec)
-                training_label.append(emotions2[data['emotion'][index]])
+                training_label.append(emotions[data['emotion'][index]])
             else:
                 testing_data.append(landmarks_vec)
-                testing_label.append(emotions2[data['emotion'][index]])
-    return training_data, training_label, testing_data, testing_label
-
-def make_sets():
-    training_data = []
-    training_label = []
-    testing_data = []
-    testing_label = []
-    for emotion in emotions:
-        training_set, testing_set = get_files(emotion)
-        #add data to training and testing dataset, and generate labels 0-4
-        for item in training_set:
-            #read image
-            img = cv2.imread(item)
-            #convert to grayscale
-            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            clahe_img = clahe.apply(gray_img)
-            landmarks_vec = get_landmarks(clahe_img)
-
-            if landmarks_vec == "error":
-                pass
-            else:
-                training_data.append(landmarks_vec)
-                training_label.append(emotions.index(emotion))
-
-        for item in testing_set:
-            img = cv2.imread(item)
-            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            clahe_img = clahe.apply(gray_img)
-            landmarks_vec = get_landmarks(clahe_img)
-            if landmarks_vec == "error":
-                pass
-            else:
-                testing_data.append(landmarks_vec)
-                testing_label.append(emotions.index(emotion))
-
+                testing_label.append(emotions[data['emotion'][index]])
     return training_data, training_label, testing_data, testing_label
 
 def create_model():
@@ -157,8 +116,6 @@ def create_model():
         #Make sets by random sampling 80/20%
         print("Marking set %s" %i)
         X_train, y_train, X_test, y_test = make_sets_2()
-
-        print(X_test)
 
         #Turn the training set into a numpy array for the classifier
         np_X_train = np.array(X_train)
@@ -174,7 +131,6 @@ def create_model():
         #npar_pred = np.array(X_test)
         pred_lin = clf.score(np_X_test, np_y_test)
         #y_pred = clf.predict(X_test)
-        #Find Best Accuracy and save to file
         if pred_lin > max_accur:
             max_accur = pred_lin
             max_clf = clf
@@ -183,17 +139,12 @@ def create_model():
             X_train_opt = np_X_train
             y_train_opt = np_y_train
             test_pred = max_clf.predict(np_X_test)
-            #train_pred = max_clf.predict(np_X_train)
-            #print("Hello")
         #y_pred = clf.predict(np_X_test)
         print("Test Accuracy: ", pred_lin)
         #print(confusion_matrix(np_y_test, y_pred))
         accur_lin.append(pred_lin)  #Store accuracy in a list
 
     print("Mean Accuracy Value: %.3f" %np.mean(accur_lin))   #Get mean accuracy of the 10 runs
-    #test_pred = max_clf.predict(X_test_opt)
-    #print(confusion_matrix(y_train_opt, train_pred))
-    #print(classification_report(y_train_opt, train_pred))
     print(confusion_matrix(y_test_opt, test_pred))
     print(classification_report(y_test_opt, test_pred))
 
@@ -202,7 +153,6 @@ def create_model():
 if __name__ == '__main__':
     max_accur, max_clf = create_model()
     print('Best accuracy = ', max_accur*100, 'percent')
-    print(max_clf)
     try:
         os.remove('models\model1.pkl')
     except OSError:
