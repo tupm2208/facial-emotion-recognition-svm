@@ -271,3 +271,4 @@ dmypy.json
 # End of https://www.gitignore.io/api/macos,python,pycharm+all,jupyternotebook,visualstudiocode,jupyternotebooks
 
 fer2013*
+dataset*
