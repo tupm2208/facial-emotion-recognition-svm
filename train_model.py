@@ -27,7 +27,7 @@ def get_landmarks(image):
         shape = model(image, d)
         xpoint = []
         ypoint = []
-        for i in range(17, 68):
+        for i in range(0, 68):
             xpoint.append(float(shape.part(i).x))
             ypoint.append(float(shape.part(i).y))
 

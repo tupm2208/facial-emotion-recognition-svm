@@ -20,7 +20,7 @@ def get_landmarks_with_point(image, frame):
         shape = model(image, d)
         xpoint = []
         ypoint = []
-        for i in range(17, 68):
+        for i in range(0, 68):
             if (i == 27) | (i == 30):
                 # For each point, draw a red circle with thickness2 on the original frame
                 cv2.circle(frame, (shape.part(i).x, shape.part(i).y), 1, (0, 0, 255), thickness=2)
@@ -123,14 +123,11 @@ def show_webcam_and_run(model, emotions, window_size=None, window_name='webcam',
             break
 
 if __name__ == '__main__':
-    emotions = ["anger", "disgust", "happy", "sad", "surprise"]
-    emotions2 = [0, 1, 2, 3, 4, 5, 6]
+    emotions = ["angry", "disgust", "happy", "sad", "surprise"]
     model_file = os.path.join('models', 'model1.pkl')
     pkl_file = open(model_file, 'rb')
     data = pickle.load(pkl_file)
     pkl_file.close()
 
-    # use learnt model
-    # show_image_test(data, emotions)
     window_name = 'WEBCAM (press q to exit)'
     show_webcam_and_run(data, emotions, window_size=(800, 600), window_name=window_name, update_time=8)
