@@ -122,37 +122,6 @@ def show_webcam_and_run(model, emotions, window_size=None, window_name='webcam',
         if cv2.waitKey(1) & 0xFF == ord('q'):   # Exit program when user press 'q'
             break
 
-
-def show_image_test(model, emotions):
-    training_data = []
-    image = cv2.imread('datatest/face6.jpg')
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    clahe_image = clahe.apply(gray)
-
-    # Get Point and Landmarks
-    landmarks_vectorised = get_landmarks_with_point(clahe_image, image)
-
-    if landmarks_vectorised == "error":
-        pass
-    else:
-        # Predict emotion
-        training_data.append(landmarks_vectorised)
-        npar_pd = np.array(training_data)
-        prediction_emo_set = model.predict_proba(npar_pd)
-        if cv2.__version__ != '3.1.0':
-            prediction_emo_set = prediction_emo_set[0]
-        print(zip(model.classes_, prediction_emo_set))
-        prediction_emo = model.predict(npar_pd)
-        if cv2.__version__ != '3.1.0':
-            prediction_emo = prediction_emo[0]
-        print(emotions[prediction_emo])
-        
-    cv2.imshow('Image', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 if __name__ == '__main__':
     emotions = ["anger", "disgust", "happy", "sad", "surprise"]
     emotions2 = [0, 1, 2, 3, 4, 5, 6]
