@@ -1,8 +1,24 @@
-# emotion-recognition-with-svm
-This code is for emotion recognition from face by use support vector machine 
+# Facial emotion recognition with svm
 
-## Credit
-The main concept of algorithm comes from <a href="http://www.paulvangent.com/2016/08/05/emotion-recognition-using-facial-landmarks/">Paul van Gent</a>
-
-## Copyright 
-Aniwat Phaphuangwittayakul
+## Installation guides
+1. Create virtual environment by
+    ```
+    python3 -m venv venv
+    ```
+1. Activate venv
+    ```
+    source venv/bin/activate
+    ```
+1. Install dependencies by command
+    ```
+    pip install -r requirements.txt
+    ```
+1. Download and unzip dataset [here](https://drive.google.com/file/d/17YWPzN1NEWKQl-P0VYwwdLV2ouIWaQws/view?usp=sharing)
+1. Train model by
+    ```
+    python3 train_model.py
+    ```
+1. Run model by
+    ```
+    python3 test_model.py
+    ```
