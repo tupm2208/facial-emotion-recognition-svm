@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 import pandas as pd
 
 
-emotions = ["anger", "disgust", "happy", "sad", "surprise"]
+emotions = ["angry", "disgust", "happy", "sad", "surprise"]
 detector = dlib.get_frontal_face_detector()
 model = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
