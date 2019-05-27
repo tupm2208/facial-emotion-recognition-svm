@@ -107,6 +107,8 @@ def show_webcam_and_run(model, emotions, window_size=None, window_name='webcam',
             if cv2.__version__ != '3.1.0':
                 prediction_emo = prediction_emo[0]
             print(prediction_emo)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(frame, prediction_emo, (50, 50),font, 0.8, (255, 0, 0), 2, cv2.LINE_AA)
 
         cv2.imshow(window_name, frame)  #Display the frame
         ret, frame = vc.read()
@@ -138,7 +140,7 @@ def show_image_test(model, emotions):
         if cv2.__version__ != '3.1.0':
             prediction_emo = prediction_emo[0]
         print(emotions[prediction_emo])
-
+        
     cv2.imshow('Image', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
