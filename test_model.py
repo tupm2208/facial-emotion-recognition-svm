@@ -30,6 +30,10 @@ def get_landmarks_with_point(image, frame):
         # Center points of both axis
         xcenter = np.mean(xpoint)
         ycenter = np.mean(ypoint)
+        
+        for i in range(0, 68-17):
+            print((int(xcenter),int(ycenter)),(int(xpoint[i]),int(ypoint[i])))
+            cv2.line(frame,(int(xcenter),int(ycenter)),(int(xpoint[i]),int(ypoint[i])),(0,0,255),1)
 
         # Calculate distance between particular points and center point
         xdistcent = [(x-xcenter) for x in xpoint]
